@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alert Details</title>
+    <link rel="stylesheet" href="/static/style.css?v=1">
+</head>
+<body>
+
+<h1>Alert Investigation View</h1>
+
+<a href="/" class="back-btn">⟵ Back to Dashboard</a>
+
+<h2>Full Flow Log</h2>
+<pre class="flow-box">
+{{ flow | tojson(indent=2) }}
+</pre>
+
+<h2>LLM Reasoning</h2>
+<div class="reasoning-box">
+    {{ flow.reasoning }}
+</div>
+
+</body>
+</html>

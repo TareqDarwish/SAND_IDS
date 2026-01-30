@@ -1,0 +1,291 @@
+/* ================= GLOBAL ================= */
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    margin: 0;
+    padding: 30px;
+    background: linear-gradient(180deg, #0a1a2f, #0e243f);
+    color: #e6e9ef;
+}
+
+h1, h2 {
+    color: #ffffff;
+}
+
+/* ================= FILTER BAR ================= */
+
+.filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+select, input {
+    background: #122b4d;
+    color: #ffffff;
+    border: 1px solid #2f4f7f;
+    padding: 8px 10px;
+    font-size: 14px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+/* Hover pop + glow */
+select:hover,
+input:hover {
+    background: #173a66;
+    box-shadow: 0 0 10px rgba(70, 140, 255, 0.7);
+    transform: translateY(-2px);
+    cursor: pointer;
+}
+
+/* Focus */
+select:focus,
+input:focus {
+    outline: none;
+    box-shadow: 0 0 12px rgba(90, 160, 255, 0.9);
+}
+
+/* ================= TABLE ================= */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #f5f7fa;
+    color: #1a1a1a;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+th {
+    background: linear-gradient(180deg, #1f355e, #162b4d);
+    color: #ffffff;
+    padding: 12px;
+    text-align: left;
+    font-size: 15px;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ccc;
+    word-break: break-word;
+    font-size: 14px;
+}
+
+tr:nth-child(even) {
+    background: #e9edf3;
+}
+
+tr:hover {
+    background: #d6e3ff;
+    cursor: pointer;
+}
+
+/* ================= PRIORITY COLORS ================= */
+
+.HIGH {
+    color: #c62828;
+    font-weight: bold;
+}
+
+.MEDIUM {
+    color: #ef6c00;
+    font-weight: bold;
+}
+
+.LOW {
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+/* ================= CLASSIFICATION COLORS ================= */
+
+.SUSPICIOUS {
+    color: #8a4f00;
+    font-weight: bold;
+}
+
+.MALICIOUS {
+    color: #b00020;
+    font-weight: bold;
+}
+
+.BENIGN {
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+/* ================= CONFIDENCE ================= */
+
+.confidence {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+/* ================= ALERT DETAILS PAGE ================= */
+
+.details-container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* Header with back button */
+.details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+/* ================= Stylized Back Button ================= */
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: #ffffff;
+
+    padding: 12px 20px;
+    border-radius: 999px;
+
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.5),
+        inset 0 0 0 rgba(255,255,255,0);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+/* Hover effect */
+.back-btn:hover {
+    background: linear-gradient(135deg, #2a5298, #3b6fd8);
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.6),
+        0 0 18px rgba(80, 140, 255, 0.9);
+}
+
+/* Active (click) effect */
+.back-btn:active {
+    transform: translateY(0);
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+
+/* Sections */
+.details-section {
+    background: #f5f7fa;
+    color: #1a1a1a;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+.details-section h2 {
+    margin-top: 0;
+    border-bottom: 2px solid #c0cde4;
+    padding-bottom: 6px;
+    color: #162b4d;
+}
+
+/* Summary table */
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.summary-table th {
+    background: #e3e9f3;
+    color: #162b4d;
+    text-align: left;
+    width: 25%;
+    padding: 8px;
+}
+
+.summary-table td {
+    padding: 8px;
+}
+
+/* ================= REASONING ================= */
+
+.reasoning-box {
+    background: #0f1e33;
+    color: #e6e9ef;
+    padding: 16px;
+    border-left: 5px solid #2962cc;
+    border-radius: 6px;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
+}
+
+/* ================= FLOW JSON ================= */
+
+.flow-box {
+    background: #081425;
+    color: #7ee0ff;
+    padding: 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-size: 13px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
+}
+
+/* ================= New Alert Indicator ================= */
+
+.new-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    background: #ff2e2e;
+    border-radius: 50%;
+    margin-right: 8px;
+    box-shadow: 0 0 6px rgba(255, 46, 46, 0.9);
+}
+
+/* ================= Global Alert Animation ================= */
+
+@keyframes pulse {
+    0%   { box-shadow: 0 0 0 rgba(255,46,46,0.9); }
+    50%  { box-shadow: 0 0 16px rgba(255,46,46,1); }
+    100% { box-shadow: 0 0 0 rgba(255,46,46,0.9); }
+}
+
+.global-pulse {
+    animation: pulse 0.6s ease-in-out 3;
+}
+
+/* Sound toggle button */
+.sound-toggle {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    transition: all 0.2s ease;
+}
+
+.sound-toggle:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 12px rgba(80,140,255,0.9);
+}
+
+.sound-toggle.off {
+    opacity: 0.5;
+}

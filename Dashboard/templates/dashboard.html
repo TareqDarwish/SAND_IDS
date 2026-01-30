@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SAND – IDS Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css?v=3">
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <h1>SAND – Intrusion Detection Alerts</h1>
+
+    <div style="display:flex; align-items:center; gap:14px;">
+        <!-- Sound toggle -->
+        <button id="soundToggle" class="sound-toggle off">🔇 Sound</button>
+
+        <!-- Global alert indicator -->
+        <div id="global-alert" style="display:none; align-items:center; gap:8px;">
+            <span class="new-dot"></span>
+            <span id="global-alert-count" style="font-weight:bold;">0 New Alerts</span>
+        </div>
+    </div>
+</div>
+
+<!-- ================= FILTERS ================= -->
+
+<div class="filters">
+    <select id="statusFilter">
+        <option value="">All Status</option>
+        <option value="NEW">New</option>
+        <option value="SEEN">Seen</option>
+    </select>
+
+    <select id="priorityFilter">
+        <option value="">All Priority</option>
+        <option value="HIGH">High</option>
+        <option value="MEDIUM">Medium</option>
+        <option value="LOW">Low</option>
+    </select>
+
+    <select id="classificationFilter">
+        <option value="">All Classification</option>
+        <option value="SUSPICIOUS">Suspicious</option>
+        <option value="BENIGN">Benign</option>
+        <option value="MALICIOUS">Malicious</option>
+    </select>
+
+    <select id="sortFilter">
+        <option value="time">Newest</option>
+        <option value="confidence">Confidence</option>
+        <option value="priority">Priority</option>
+    </select>
+
+    <input type="number" id="confidenceFilter" placeholder="Min Confidence">
+</div>
+
+<!-- ================= TABLE ================= -->
+
+<table id="alerts-table">
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>Priority</th>
+            <th>Classification</th>
+            <th>Attack</th>
+            <th>Confidence</th>
+            <th>Flow ID</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<!-- ================= SCRIPT ================= -->
+
+<script>
+let lastNewAlertCount = 0;
+
+/* ---------- Sound setup ---------- */
+const alertSound = new Audio("/static/alert.mp3");
+alertSound.volume = 0.5;
+
+let soundEnabled = localStorage.getItem("soundEnabled") === "true";
+const soundToggle = document.getElementById("soundToggle");
+
+function updateSoundButton() {
+    if (soundEnabled) {
+        soundToggle.textContent = "🔔 Sound On";
+        soundToggle.classList.remove("off");
+    } else {
+        soundToggle.textContent = "🔇 Sound";
+        soundToggle.classList.add("off");
+    }
+}
+
+updateSoundButton();
+
+soundToggle.onclick = () => {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem("soundEnabled", soundEnabled);
+    updateSoundButton();
+};
+
+/* ---------- Load alerts ---------- */
+async function loadAlerts() {
+    const params = new URLSearchParams({
+        status: statusFilter.value,
+        priority: priorityFilter.value,
+        classification: classificationFilter.value,
+        sort: sortFilter.value,
+        min_confidence: confidenceFilter.value
+    });
+
+    const res = await fetch("/api/alerts?" + params.toString());
+    const alerts = await res.json();
+
+    const tbody = document.querySelector("#alerts-table tbody");
+    tbody.innerHTML = "";
+
+    /* ---------- Global alert badge ---------- */
+    const newAlerts = alerts.filter(a => a.status === "NEW");
+    const globalAlert = document.getElementById("global-alert");
+    const globalCount = document.getElementById("global-alert-count");
+
+    if (newAlerts.length > 0) {
+        globalAlert.style.display = "flex";
+        globalCount.textContent =
+            `${newAlerts.length} New Alert${newAlerts.length > 1 ? "s" : ""}`;
+
+        if (newAlerts.length > lastNewAlertCount) {
+            globalAlert.classList.remove("global-pulse");
+            void globalAlert.offsetWidth; // force reflow
+            globalAlert.classList.add("global-pulse");
+
+            if (soundEnabled) {
+                alertSound.play().catch(() => {});
+            }
+        }
+
+        lastNewAlertCount = newAlerts.length;
+    } else {
+        globalAlert.style.display = "none";
+        lastNewAlertCount = 0;
+    }
+
+    /* ---------- Table rows ---------- */
+    alerts.forEach(a => {
+        const row = document.createElement("tr");
+        row.onclick = () => window.location.href = `/alert/${a.flow_id}`;
+
+        const seenInSession = sessionStorage.getItem(a.flow_id);
+        const showDot = a.status === "NEW" && !seenInSession;
+
+        if (showDot) {
+            sessionStorage.setItem(a.flow_id, "shown");
+        }
+
+        row.innerHTML = `
+            <td>
+                ${showDot ? '<span class="new-dot"></span>' : ''}
+                ${new Date(a.created_at).toLocaleString()}
+            </td>
+            <td class="${a.priority}">${a.priority}</td>
+            <td class="${a.classification}">${a.classification}</td>
+            <td>${a.attack_name || "-"}</td>
+            <td class="confidence">${a.confidence}</td>
+            <td>${a.flow_id}</td>
+        `;
+
+        tbody.appendChild(row);
+    });
+}
+
+/* ---------- Filters ---------- */
+document.querySelectorAll(".filters select, .filters input")
+    .forEach(el => el.addEventListener("change", loadAlerts));
+
+/* ---------- Initial load + auto refresh ---------- */
+loadAlerts();
+setInterval(loadAlerts, 5000);
+</script>
+
+</body>
+</html>
